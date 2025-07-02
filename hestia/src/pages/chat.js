@@ -3,7 +3,7 @@ import React from "react";
 export default function Chat() {
   return (
     <div
-      className="relative flex min-h-screen flex-col bg-[#181611] text-white overflow-x-hidden"
+      className="relative flex min-h-screen flex-col bg-[#000000] text-white overflow-x-hidden"
       style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">
@@ -60,7 +60,7 @@ export default function Chat() {
             <div className="flex items-end gap-3 p-4 justify-end">
               <div className="flex flex-1 flex-col gap-1 items-end">
                 <p className="text-[#bab19c] text-[13px] font-normal max-w-[360px] text-right">User</p>
-                <p className="text-base font-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-[#f3c144] text-[#181611]">I'm feeling a bit anxious about work.</p>
+                <p className="text-base font-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-[#f3c144] text-[#000000]">I'm feeling a bit anxious about work.</p>
               </div>
               <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0"
                 style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOKRWYlOsQahCEUJ-tHnAu2ynNYp2aFQPGmZVZnsdma4BjpGbSTElcTP-SWWVse5dD8ytyeV2RYNckRI0dyiKPojNhQSTdrB4CqnQkWEpm4O18B5Wh--rDBOhRVW76CCrDjjjsxB0-lXdoOh4wYryu_TdET_KQh0d3YpUDz1QFq6qBJf7Q7pN7ruLT7nHZzP4uoSxU8eoBlK_aSDhnCbLkxoKRT0Ifqhn0n2fDxAbrknG6yUFpoKUOJY404qa3KH5PFSGKvnvL-C03")` }} >
@@ -107,7 +107,7 @@ export default function Chat() {
             </div>
 
             <div className="flex px-4 py-3 justify-center">
-              <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f3c144] text-[#181611] text-sm font-bold">
+              <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f3c144] text-[#000000] text-sm font-bold">
                 New Chat
               </button>
             </div>
