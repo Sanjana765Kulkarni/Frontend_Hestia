@@ -16,7 +16,7 @@ export default function Chat() {
 
     try {
       const response = await axios.post(
-        "https://backend-hestia.onrender.com/chat",
+        "https://hestia-backend-rpby.onrender.com/chat",
         { text: input },
         { headers: { "Content-Type": "application/json" }}
       );
