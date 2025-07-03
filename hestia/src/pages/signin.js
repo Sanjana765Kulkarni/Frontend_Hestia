@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export default function Signin() {
-  // const navigate = useNavigate(); // Use if you want navigation
+export default function signin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    setError("");
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/chat"); // or wherever you want to go after login
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <div
@@ -40,29 +56,36 @@ export default function Signin() {
           </button>
         </header>
         <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+          <form
+            className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1"
+            onSubmit={handleSignIn}
+          >
             <h2 className="text-white tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Hey, welcome back.</h2>
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
                 <input
                   placeholder="Your name or email"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#5d593c] bg-[#2e2c1e] focus:border-[#5d593c] h-14 placeholder:text-[#bfbb9c] p-[15px] text-base font-normal leading-normal"
-                  value=""
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </label>
             </div>
             <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
               <label className="flex flex-col min-w-40 flex-1">
                 <input
+                  type="password"
                   placeholder="Password"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#5d593c] bg-[#2e2c1e] focus:border-[#5d593c] h-14 placeholder:text-[#bfbb9c] p-[15px] text-base font-normal leading-normal"
-                  value=""
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </label>
             </div>
-            <p className="text-[#bfbb9c] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline">Forgot your password?</p>
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <div className="flex px-4 py-3">
               <button
+                type="submit"
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 flex-1 bg-[#f4f1db] text-[#1f1e14] text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <span className="truncate">Let's begin</span>
@@ -75,7 +98,7 @@ export default function Signin() {
                 <span className="truncate">Continue with Google</span>
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
