@@ -1,3 +1,11 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function Home() {
+  const navigate = useNavigate();
+
+  return (
+
 <html>
   <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
@@ -90,3 +98,4 @@
     </div>
   </body>
 </html>
+)
