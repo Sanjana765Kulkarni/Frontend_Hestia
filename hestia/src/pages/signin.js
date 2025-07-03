@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Signin() {
-  // const navigate = useNavigate(); // Use if you want navigation
+   const navigate = useNavigate(); // Use if you want navigation
 
   return (
     <div

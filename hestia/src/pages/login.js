@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+    const navigate = useNavigate();
+
   return (
     <div
       className="relative flex min-h-screen flex-col bg-[#232010] text-white overflow-x-hidden"
