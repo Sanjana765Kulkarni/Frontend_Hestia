@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export default function Signin() {
-  // const navigate = useNavigate(); // Use if you want navigation
+export default function signin() {
+   const navigate = useNavigate(); // Use if you want navigation
 
   return (
     <div
