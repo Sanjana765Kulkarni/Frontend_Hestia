@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Login() {
+export default function signin() {
   return (
     <div
       className="relative flex min-h-screen flex-col bg-[#232010] text-white overflow-x-hidden"
