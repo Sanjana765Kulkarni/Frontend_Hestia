@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+    const navigate = useNavigate();
+
   return (
     <div
       className="relative flex min-h-screen flex-col bg-[#232010] text-white overflow-x-hidden"
@@ -69,7 +72,7 @@ export default function Login() {
 
             <p
               className="text-[#cbc190] text-sm text-center underline pb-3 pt-1 px-4 cursor-pointer"
-              onClick={() => navigate("/signup")} // Add this handler
+              onClick={() => navigate("/signin")} // Add this handler
             >
               Don't have an account? Sign up
             </p>

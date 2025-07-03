@@ -2,23 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export default function signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    setError("");
-    const auth = getAuth();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/chat"); // or wherever you want to go after login
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+export default function Signin() {
+  // const navigate = useNavigate(); // Use if you want navigation
 
   return (
     <div
