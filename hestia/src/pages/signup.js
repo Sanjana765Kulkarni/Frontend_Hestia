@@ -1,74 +1,230 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import "../firebase"; // adjust path based on your folders
+import "../firebase"; // adjust path if needed
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    if (errors[e.target.name]) {
+      setErrors({
+        ...errors,
+        [e.target.name]: "",
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    return newErrors;
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    setLoading(true);
     const auth = getAuth();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       navigate("/chat");
     } catch (err) {
       setError(err.message);
     }
+    setLoading(false);
   };
 
   return (
     <div
-      className="relative flex size-full min-h-screen flex-col bg-[#1f1e14] dark group/design-root overflow-x-hidden"
-      style={{ fontFamily: '"Plus Jakarta Sans", "Noto Sans", sans-serif' }}
+      className="relative flex min-h-screen flex-col bg-black text-white overflow-x-hidden"
+      style={{ fontFamily: "Manrope, Noto Sans, sans-serif" }}
     >
-      <div className="layout-container flex h-full grow flex-col">
-        
+      <div className="flex flex-1 items-center justify-center py-12 px-6">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="h-16 w-16 bg-[#f4c653] rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-black font-bold text-2xl">H</span>
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Join Hestia</h1>
+            <p className="text-gray-400">Create your account and start your wellness journey</p>
+          </div>
 
-        <div className="px-40 flex flex-1 justify-center py-5">
-          <form
-            className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1"
-            onSubmit={handleSignup}
-          >
-            <h2 className="text-white tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Create an account</h2>
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
+          <div className="bg-[#1a1611] rounded-xl p-8 border border-[#483e23]">
+            <form onSubmit={handleSignup} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium mb-2">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-black border border-[#483e23] rounded-lg focus:outline-none focus:border-[#f4c653] transition-colors"
+                    placeholder="John"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-black border border-[#483e23] rounded-lg focus:outline-none focus:border-[#f4c653] transition-colors"
+                    placeholder="Doe"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  Email Address
+                </label>
                 <input
                   type="email"
-                  placeholder="Your email"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#5d593c] bg-[#2e2c1e] focus:border-[#5d593c] h-14 placeholder:text-[#bfbb9c] p-[15px] text-base font-normal leading-normal"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  id="email"
+                  name="email"
                   required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-black border border-[#483e23] rounded-lg focus:outline-none focus:border-[#f4c653] transition-colors"
+                  placeholder="john@example.com"
                 />
-              </label>
-            </div>
-            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-              <label className="flex flex-col min-w-40 flex-1">
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium mb-2">
+                  Password
+                </label>
                 <input
                   type="password"
-                  placeholder="Password"
-                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#5d593c] bg-[#2e2c1e] focus:border-[#5d593c] h-14 placeholder:text-[#bfbb9c] p-[15px] text-base font-normal leading-normal"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  id="password"
+                  name="password"
                   required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 bg-black border rounded-lg focus:outline-none transition-colors ${
+                    errors.password ? "border-red-500" : "border-[#483e23] focus:border-[#f4c653]"
+                  }`}
+                  placeholder="At least 8 characters"
                 />
-              </label>
-            </div>
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-            <div className="flex px-4 py-3">
+                {errors.password && (
+                  <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 bg-black border rounded-lg focus:outline-none transition-colors ${
+                    errors.confirmPassword ? "border-red-500" : "border-[#483e23] focus:border-[#f4c653]"
+                  }`}
+                  placeholder="Repeat your password"
+                />
+                {errors.confirmPassword && (
+                  <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
+                )}
+              </div>
+
+              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+              <div className="flex items-start">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  required
+                  className="w-4 h-4 text-[#f4c653] bg-black border-[#483e23] rounded focus:ring-[#f4c653] focus:ring-2 mt-1"
+                />
+                <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/terms")}
+                    className="text-[#f4c653] hover:underline"
+                  >
+                    Terms of Service
+                  </button>{" "}
+                  and{" "}
+                  <button
+                    type="button"
+                    onClick={() => navigate("/privacy")}
+                    className="text-[#f4c653] hover:underline"
+                  >
+                    Privacy Policy
+                  </button>
+                </label>
+              </div>
+
               <button
                 type="submit"
-                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 flex-1 bg-[#f4f1db] text-[#1f1e14] text-sm font-bold leading-normal tracking-[0.015em]"
+                disabled={loading}
+                className="w-full bg-[#f4c653] text-[#221d11] font-bold py-3 px-4 rounded-lg hover:bg-[#e6b347] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="truncate">Sign Up</span>
+                {loading ? "Creating Account..." : "Create Account"}
               </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-400">
+                Already have an account?{" "}
+                <button
+                  onClick={() => navigate("/login")}
+                  className="text-[#f4c653] hover:underline font-semibold"
+                >
+                  Sign in here
+                </button>
+              </p>
             </div>
-          </form>
+          </div>
+
+          <div className="mt-8 bg-yellow-900/20 border border-yellow-500 rounded-lg p-4">
+            <p className="text-yellow-100 text-sm text-center">
+              <strong>Important:</strong> Hestia provides AI-powered support, not professional therapy. 
+              If you're experiencing a mental health crisis, please contact a licensed professional or call 988.
+            </p>
+          </div>
         </div>
       </div>
     </div>
