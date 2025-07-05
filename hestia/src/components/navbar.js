@@ -9,7 +9,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-        navigate("/");
+      navigate("/");
       await signOut(auth);
     } catch (err) {
       console.error("Logout failed:", err);
@@ -33,23 +33,29 @@ export default function Navbar() {
       <div className="flex flex-1 justify-end gap-8">
         <div className="flex items-center gap-9">
           <span
-            className="text-white text-sm font-medium cursor-pointer"
+            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
             onClick={() => navigate("/")}
-          >Home</span>
+          >
+            Home
+          </span>
           <span
-            className="text-white text-sm font-medium cursor-pointer"
+            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
             onClick={() => navigate("/about")}
-          >About</span>
+          >
+            About
+          </span>
           <span
-            className="text-white text-sm font-medium cursor-pointer"
+            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
             onClick={() => navigate("/contact")}
-          >Contact</span>
+          >
+            Contact
+          </span>
         </div>
 
         {user && (
           <button
             onClick={handleLogout}
-            className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f4c653] text-[#221d11] text-sm font-bold"
+            className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f4c653] text-[#221d11] text-sm font-bold hover:bg-[#e6b347] transition-colors"
           >
             Logout
           </button>
