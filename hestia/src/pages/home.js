@@ -48,9 +48,24 @@ export default function Home() {
           <div className="flex max-w-[960px] flex-1 flex-col">
             <div className="flex flex-col gap-6 px-5 py-10 text-center">
               <div className="flex flex-wrap items-center justify-center gap-6">
-                <a className="text-[#caba91] text-base font-normal min-w-40" onClick={() => navigate("/privacy")}>Privacy Policy</a>
-                <a className="text-[#caba91] text-base font-normal min-w-40" onClick={() => navigate("/terms")}>Terms of Service</a>
-                <a className="text-[#caba91] text-base font-normal min-w-40" onClick={() => navigate("/privacy")}>Contact Us</a>
+                <a
+                  className="text-[#caba91] text-base font-normal min-w-40 cursor-pointer hover:text-[#f4c653] transition-colors"
+                  onClick={() => navigate("/privacy")}
+                >
+                  Privacy Policy
+                </a>
+                <a
+                  className="text-[#caba91] text-base font-normal min-w-40 cursor-pointer hover:text-[#f4c653] transition-colors"
+                  onClick={() => navigate("/terms")}
+                >
+                  Terms of Service
+                </a>
+                <a
+                  className="text-[#caba91] text-base font-normal min-w-40 cursor-pointer hover:text-[#f4c653] transition-colors"
+                  onClick={() => navigate("/contact")}
+                >
+                  Contact Us
+                </a>
               </div>
               <p className="text-[#caba91] text-base font-normal">© 2024 Hestia. All rights reserved.</p>
             </div>
