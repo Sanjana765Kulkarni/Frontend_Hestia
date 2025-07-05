@@ -73,7 +73,7 @@ export default function Login() {
               </button>
             </div>
 
-            <p className="text-[#cbc190] text-sm text-center underline pb-3 pt-1 px-4 cursor-pointer" onClick={() => navigate("/signup")}>
+            <p className="text-[#cbc190] text-sm text-center underline pb-3 pt-1 px-4 cursor-pointer" onClick={() => navigate("/signin")}>
               Don't have an account? Sign up
             </p>
 

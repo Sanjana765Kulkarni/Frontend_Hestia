@@ -1,14 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 
 export default function Home() {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate("/chat");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-black overflow-x-hidden" style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
-        
-
         <div className="px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div className="@container">
@@ -19,10 +28,12 @@ export default function Home() {
                 >
                   <div className="flex flex-col gap-2 text-center">
                     <h1 className="text-white text-4xl font-black tracking-[-0.033em]">Welcome to Hestia</h1>
-                    <h2 className="text-white text-sm font-normal">Your personal AI therapy companion. Hestia offers personalized support and guidance to help you navigate life's challenges and achieve mental well-being.</h2>
+                    <h2 className="text-white text-sm font-normal">
+                      Your personal AI therapy companion. Hestia offers personalized support and guidance to help you navigate life's challenges and achieve mental well-being.
+                    </h2>
                   </div>
                   <button
-                    onClick={() => navigate("/login")}
+                    onClick={handleGetStarted}
                     className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f4c653] text-[#221d11] text-sm font-bold"
                   >
                     <span className="truncate">Get Started</span>
