@@ -8,6 +8,7 @@ import Signin from "./pages/signin";
 import About from "./pages/about";
 import TermsOfService from "./pages/TermsofService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Contact from "./pages/Contact";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={
           <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
             404 - Page Not Found

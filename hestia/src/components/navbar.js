@@ -28,7 +28,7 @@ export default function Navbar() {
           >About</span>
           <span
             className="text-white text-sm font-medium cursor-pointer"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/contact")}
           >Contact</span>
         </div>
         <button
