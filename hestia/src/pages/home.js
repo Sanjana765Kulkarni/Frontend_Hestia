@@ -7,25 +7,7 @@ export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col bg-black overflow-x-hidden" style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}>
       <div className="layout-container flex h-full grow flex-col">
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#483e23] px-10 py-3">
-          <div className="flex items-center gap-4 text-white">
-            <img src="/logo.png" alt="Hestia Logo" className="h-8 w-8 object-contain" />
-            <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Hestia</h2>
-          </div>
-          <div className="flex flex-1 justify-end gap-8">
-            <div className="flex items-center gap-9">
-              <a className="text-white text-sm font-medium" onClick={() => navigate("/")}>Home</a>
-              <a className="text-white text-sm font-medium" onClick={() => navigate("/about")}>About</a>
-              <a className="text-white text-sm font-medium" onClick={() => navigate("/")}>Contact</a>
-            </div>
-            <button
-              onClick={() => navigate("/login")}
-              className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#f4c653] text-[#221d11] text-sm font-bold"
-            >
-              <span className="truncate">Get Started</span>
-            </button>
-          </div>
-        </header>
+        
 
         <div className="px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">

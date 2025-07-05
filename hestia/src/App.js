@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/navbar"; // 👈 your new constant navbar
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Chat from "./pages/chat";
@@ -11,6 +12,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 export default function App() {
   return (
     <BrowserRouter>
+      <Navbar /> {/* 👈 now always visible */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -20,9 +22,10 @@ export default function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="*" element={
-        <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
+          <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
             404 - Page Not Found
-        </div>} />
+          </div>
+        } />
       </Routes>
     </BrowserRouter>
   );
