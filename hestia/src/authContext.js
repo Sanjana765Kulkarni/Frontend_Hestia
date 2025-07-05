@@ -17,13 +17,12 @@ export function AuthProvider({ children }) {
       setCurrentUser(user);
       setLoading(false);
     });
-
-    return unsubscribe; // cleanup
+    return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ currentUser, loading }}>
+      {children}
     </AuthContext.Provider>
   );
 }

@@ -9,5 +9,5 @@ export default function PrivateRoute({ children }) {
     return <div className="flex items-center justify-center min-h-screen text-white">Loading...</div>;
   }
 
-  return currentUser ? children : <Navigate to="/login" />;
+  return currentUser ? children : <Navigate to="/" />;
 }
