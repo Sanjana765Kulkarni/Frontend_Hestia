@@ -4,7 +4,7 @@ import Navbar from "./components/navbar"; // 👈 your new constant navbar
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Chat from "./pages/chat";
-import Signin from "./pages/signin";
+import Signin from "./pages/signup";
 import About from "./pages/about";
 import TermsOfService from "./pages/TermsofService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
