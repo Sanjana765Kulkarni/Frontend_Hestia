@@ -35,28 +35,7 @@ export default function Chat() {
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181611] text-white overflow-x-hidden" style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}>
       {/* Header / Navbar */}
-      <header className="flex items-center justify-between border-b border-b-[#393428] px-10 py-3">
-        <div className="flex items-center gap-4">
-          <div className="size-4">
-            <svg viewBox="0 0 48 48" fill="none"><path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"/></svg>
-          </div>
-          <h2 className="text-lg font-bold">Hestia</h2>
-        </div>
-        <div className="flex flex-1 justify-end gap-8">
-          <div className="flex items-center gap-9">
-            <a className="text-white text-sm font-medium" href="/">Home</a>
-            <a className="text-white text-sm font-medium" href="#">About</a>
-            <a className="text-white text-sm font-medium" href="#">Contact</a>
-          </div>
-          <button className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-4 bg-[#393428] text-white text-sm font-bold">
-            <span className="truncate">Get Started</span>
-          </button>
-          <div
-            className="bg-center bg-no-repeat bg-cover rounded-full w-10 h-10"
-            style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuBCh3dpO5nWL5uRTaUte70T1h0M272TnFUBVKV_UfPw-OlKpnNuL8HbbY44piB5nJkYAKT5JPwSVjf-OpCGMiPw2Jyh5_E0FMwQAnYTliFPIM5Aruypr2ikZN73Aiu3e3V3faoZ091ci1hsXHSt2dIRBMxxkYDqUO--kYer25A_QOgfHlogE6TcK1lfyDBgr455fv9VZobOcO1E6IU2QJLzdTjDwLhjzuCEJr7CvLoW7YLlH-qG8bA-EgqbdJItU2nYXbeK3pAR-vGl")` }}
-          ></div>
-        </div>
-      </header>
+      
 
       {/* Chat Messages */}
       <div className="px-10 md:px-40 flex flex-1 flex-col py-5 space-y-4">
@@ -96,19 +75,7 @@ export default function Chat() {
         </button>
       </div>
 
-      {/* Footer */}
-      <footer className="flex justify-center border-t border-t-[#393428] mt-4">
-        <div className="flex max-w-[960px] flex-1 flex-col">
-          <div className="flex flex-col gap-6 px-5 py-10 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-6">
-              <a className="text-[#caba91] text-base font-normal min-w-40" href="#">Privacy Policy</a>
-              <a className="text-[#caba91] text-base font-normal min-w-40" href="#">Terms of Service</a>
-              <a className="text-[#caba91] text-base font-normal min-w-40" href="#">Contact Us</a>
-            </div>
-            <p className="text-[#caba91] text-base font-normal">© 2024 Hestia. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 }
