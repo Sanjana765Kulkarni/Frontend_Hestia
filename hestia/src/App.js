@@ -22,6 +22,7 @@ export default function App() {
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="*" element={
           <div className="flex items-center justify-center min-h-screen bg-black text-white text-xl">
             404 - Page Not Found

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { getAuth } from "firebase/auth";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -11,13 +12,20 @@ export default function Chat() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Please log in first.");
+      return;
+    }
+
     setMessages(prev => [...prev, { sender: "User", text: input }]);
     setLoading(true);
 
     try {
       const response = await axios.post(
         "https://hestia-backend-rpby.onrender.com/chat",
-        { text: input },
+        { text: input, uid: user.uid },
         { headers: { "Content-Type": "application/json" }}
       );
 
@@ -34,10 +42,6 @@ export default function Chat() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-[#181611] text-white overflow-x-hidden" style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}>
-      {/* Header / Navbar */}
-      
-
-      {/* Chat Messages */}
       <div className="px-10 md:px-40 flex flex-1 flex-col py-5 space-y-4">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex items-end gap-3 p-4 ${msg.sender === "User" ? "justify-end" : ""}`}>
@@ -60,7 +64,6 @@ export default function Chat() {
         )}
       </div>
 
-      {/* Input */}
       <div className="flex items-center px-4 py-3 gap-3">
         <input
           type="text"
@@ -74,8 +77,6 @@ export default function Chat() {
           Send
         </button>
       </div>
-
-      
     </div>
   );
 }
