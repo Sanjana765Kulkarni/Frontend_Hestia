@@ -118,6 +118,30 @@ export default function Login() {
               </button>
             </form>
 
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[#483e23]" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-[#1a1611] px-2 text-gray-400">
+                  Or
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-2 rounded-lg h-12 bg-transparent border border-[#483e23] text-white text-sm font-bold px-4 hover:bg-[#221d11] transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M47.532 24.552c0-1.584-.144-3.12-.42-4.608H24.268v8.736h13.08c-.564 2.82-2.22 5.22-4.644 6.864v5.664h7.26c4.248-3.912 6.672-9.648 6.672-16.656z" fill="#4285F4"/>
+                <path d="M24.268 48c6.48 0 11.928-2.136 15.9-5.76l-7.26-5.664c-2.136 1.44-4.86 2.292-7.64 2.292-5.88 0-10.86-3.972-12.648-9.264H4.14v5.832C8.16 42.66 15.732 48 24.268 48z" fill="#34A853"/>
+                <path d="M11.62 28.728c-.48-1.44-.756-2.964-.756-4.548s.276-3.108.756-4.548V13.8H4.14C2.856 16.62 2.1 19.86 2.1 23.184c0 3.324.756 6.564 2.04 9.36l7.48-5.832z" fill="#FBBC05"/>
+                <path d="M24.268 9.924c3.528 0 6.708 1.224 9.216 3.636l6.444-6.444C36.18 2.964 30.74 0 24.268 0 15.732 0 8.16 5.34 4.14 13.8l7.48 5.832c1.788-5.292 6.768-9.264 12.648-9.264z" fill="#EA4335"/>
+              </svg>
+              Continue with Google
+            </button>
+
             <div className="mt-6 text-center">
               <p className="text-gray-400">
                 Don't have an account?{" "}
@@ -128,15 +152,6 @@ export default function Login() {
                   Sign up here
                 </button>
               </p>
-            </div>
-
-            <div className="flex px-4 py-3 w-full">
-              <button
-                onClick={handleGoogleLogin}
-                className="flex flex-1 justify-center rounded-lg h-10 bg-[#413e2a] text-white text-sm font-bold px-4 mt-4"
-              >
-                Continue with Google
-              </button>
             </div>
           </div>
 
