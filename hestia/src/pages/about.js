@@ -7,7 +7,7 @@ export default function About() {
       style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}
     >
       <div className="layout-container flex h-full grow flex-col">
-        <div className="px-10 md:px-40 flex flex-1 justify-center py-12">
+        <div className="px-4 sm:px-10 md:px-40 flex flex-1 justify-center py-12">
           <div className="layout-content-container flex flex-col max-w-[800px] flex-1 space-y-12">
             {/* Header */}
             <div className="text-center mb-12">
