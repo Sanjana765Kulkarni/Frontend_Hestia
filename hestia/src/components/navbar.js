@@ -31,12 +31,11 @@ export default function Navbar() {
         </h2>
       </div>
 
-      <div className="flex flex-1 justify-center">
+      <div className="absolute left-1/2 -translate-x-1/2">
         {user && (
           <p className="text-transparent text-base font-extrabold bg-clip-text bg-gradient-to-r from-[#f4c653] via-[#fff5c7] to-[#f4c653] animate-gradient">
-  Hello, {user.displayName || "User"}
-</p>
-
+            Hello, {user.displayName || "User"}
+          </p>
         )}
       </div>
 
