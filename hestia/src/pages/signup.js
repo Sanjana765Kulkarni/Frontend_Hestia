@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import "../firebase"; // adjust path if needed
 
 export default function Signup() {
@@ -52,7 +52,17 @@ export default function Signup() {
     setLoading(true);
     const auth = getAuth();
     try {
-      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const fullName = `${formData.firstName} ${formData.lastName}`;
+      await updateProfile(userCredential.user, {
+        displayName: fullName,
+      });
+
       navigate("/chat");
     } catch (err) {
       setError(err.message);
@@ -221,7 +231,7 @@ export default function Signup() {
 
           <div className="mt-8 bg-yellow-900/20 border border-yellow-500 rounded-lg p-4">
             <p className="text-yellow-100 text-sm text-center">
-              <strong>Important:</strong> Hestia provides AI-powered support, not professional therapy. 
+              <strong>Important:</strong> Hestia provides AI-powered support, not professional therapy.
               If you're experiencing a mental health crisis, please contact a licensed professional or call 988.
             </p>
           </div>
