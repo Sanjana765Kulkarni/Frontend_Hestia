@@ -5,8 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaRegCopy, FaRegEdit } from "react-icons/fa";
 
 const TypingIndicator = () => (
-  <motion.div className="flex items-center gap-2 p-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-    <img src="/hestia-avatar.png" alt="Hestia Avatar" className="rounded-full w-10 h-10 shrink-0 object-cover" />
+  <motion.div
+    className="flex items-center gap-2 p-4"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+  >
+    <div
+      className="bg-center bg-no-repeat bg-cover rounded-full w-10 h-10 shrink-0"
+      style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")` }}
+    />
     <div className="flex flex-col gap-1 items-start">
       <p className="text-[#bab19c] text-[13px]">Hestia</p>
       <div className="flex items-center gap-1.5 bg-[#393428] rounded-xl px-4 py-3">
