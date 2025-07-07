@@ -17,9 +17,9 @@ export default function Navbar() {
   };
 
   return (
-    <header
-      className="sticky top-0 z-50 bg-black flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#483e23] px-10 py-3"
-      style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 bg-black flex items-center justify-between whitespace-nowrap border-b border-[#483e23] px-10 py-3"
+      style={{ fontFamily: "Manrope, Noto Sans, sans-serif" }}
     >
       <div
         className="flex items-center gap-4 text-white cursor-pointer"
@@ -30,27 +30,35 @@ export default function Navbar() {
           Hestia
         </h2>
       </div>
-      <div className="flex flex-1 justify-end gap-8">
-        <div className="flex items-center gap-9">
-          <span
-            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
-            onClick={() => navigate("/")}
-          >
-            Home
-          </span>
-          <span
-            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
-            onClick={() => navigate("/about")}
-          >
-            About
-          </span>
-          <span
-            className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
-            onClick={() => navigate("/contact")}
-          >
-            Contact
-          </span>
-        </div>
+
+      <div className="flex flex-1 justify-center">
+        {user && (
+          <p className="text-transparent text-base font-extrabold bg-clip-text bg-gradient-to-r from-[#f4c653] via-[#fff5c7] to-[#f4c653] animate-gradient">
+  Hello, {user.displayName || "User"}
+</p>
+
+        )}
+      </div>
+
+      <div className="flex items-center gap-8">
+        <span
+          className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
+          onClick={() => navigate("/")}
+        >
+          Home
+        </span>
+        <span
+          className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
+          onClick={() => navigate("/about")}
+        >
+          About
+        </span>
+        <span
+          className="text-white text-sm font-medium cursor-pointer hover:text-[#f4c653] transition-colors"
+          onClick={() => navigate("/contact")}
+        >
+          Contact
+        </span>
 
         {user && (
           <button
@@ -61,6 +69,6 @@ export default function Navbar() {
           </button>
         )}
       </div>
-    </header>
+    </nav>
   );
 }

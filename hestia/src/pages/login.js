@@ -33,7 +33,9 @@ export default function Login() {
     setError("");
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Google user display name:", user.displayName); // <-- Here's the name!
       navigate("/chat");
     } catch (err) {
       setError(err.message);
