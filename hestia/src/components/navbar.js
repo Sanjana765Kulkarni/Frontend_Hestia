@@ -17,8 +17,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 bg-black flex items-center justify-between whitespace-nowrap border-b border-[#483e23] px-10 py-3"
+    <header
+      className="sticky top-0 z-50 bg-black flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#483e23] px-10 py-3"
       style={{ fontFamily: "Manrope, Noto Sans, sans-serif" }}
     >
       <div
@@ -69,6 +69,6 @@ export default function Navbar() {
           </button>
         )}
       </div>
-    </nav>
+    </header>
   );
 }
