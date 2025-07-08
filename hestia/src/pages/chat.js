@@ -13,14 +13,16 @@ const TypingIndicator = () => (
   >
     <div
       className="bg-center bg-no-repeat bg-cover rounded-full w-10 h-10 shrink-0"
-      style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")` }}
+      style={{
+        backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")`,
+      }}
     />
     <div className="flex flex-col gap-1 items-start">
       <p className="text-[#bab19c] text-[13px]">Hestia</p>
       <div className="flex items-center gap-1.5 bg-[#393428] rounded-xl px-4 py-3">
-        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, delay: 0.1, repeat: Infinity, ease: "easeInOut" }} />
-        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, delay: 0.2, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity }} />
+        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, delay: 0.1, repeat: Infinity }} />
+        <motion.div className="w-2 h-2 bg-gray-400 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, delay: 0.2, repeat: Infinity }} />
       </div>
     </div>
   </motion.div>
@@ -42,8 +44,9 @@ export default function Chat() {
     if (user?.displayName) setUsername(user.displayName);
   }, []);
 
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(() => scrollToBottom(), [messages, loading]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -86,15 +89,51 @@ export default function Chat() {
       sendMessage();
     }
   };
-  const handleCopy = (text) => navigator.clipboard.writeText(text);
 
+  const handleCopy = (text) => navigator.clipboard.writeText(text);
   const startEditing = (idx, text) => { setEditingIndex(idx); setEditingText(text); };
   const cancelEditing = () => { setEditingIndex(null); setEditingText(""); };
-  const saveEdit = (idx) => {
+
+  const saveEdit = async (idx) => {
     if (!editingText.trim()) return;
-    setMessages((prev) => prev.map((msg, i) => (i === idx ? { ...msg, text: editingText } : msg)));
+
+    const updatedMessages = [...messages];
+    updatedMessages[idx].text = editingText;
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return alert("Please log in first.");
+
+    if (messages[idx + 1] && messages[idx + 1].sender === "Hestia") {
+      updatedMessages.splice(idx + 1, 1);
+    }
+
+    setMessages(updatedMessages);
     setEditingIndex(null);
     setEditingText("");
+    setLoading(true);
+
+    try {
+      const response = await axios.post("https://hestia-backend-rpby.onrender.com/chat", {
+        text: editingText,
+        uid: user.uid,
+      });
+      const reply = response.data.reply || "Sorry, something went wrong.";
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.splice(idx + 1, 0, { sender: "Hestia", text: reply });
+        return newMessages;
+      });
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages.splice(idx + 1, 0, { sender: "Hestia", text: "Sorry, failed to get response." });
+        return newMessages;
+      });
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -103,16 +142,12 @@ export default function Chat() {
         <div className="max-w-4xl mx-auto space-y-4">
           <AnimatePresence>
             {messages.map((msg, idx) => (
-              <motion.div key={idx} className={`relative group flex flex-col ${msg.sender === "User" ? "items-end" : "items-start"}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: "easeOut" }}>
+              <motion.div key={idx} className={`relative group flex flex-col ${msg.sender === "User" ? "items-end" : "items-start"}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <div className="flex items-end gap-3">
                   {msg.sender === "Hestia" && (
-  <div
-    className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
-    style={{
-      backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")`,
-    }}
-  />
-)}
+                    <div className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
+                      style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")` }} />
+                  )}
                   <div className="flex flex-col gap-1">
                     <p className="text-[#bab19c] text-[11px] sm:text-[13px]">
                       {msg.sender === "User" ? username : msg.sender}
@@ -132,23 +167,20 @@ export default function Chat() {
                     )}
                   </div>
                   {msg.sender === "User" && (
-  <div
-    className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
-    style={{
-      backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOKRWYlOsQahCEUJ-tHnAu2ynNYp2aFQPGmZVZnsdma4BjpGbSTElcTP-SWWVse5dD8ytyeV2RYNckRI0dyiKPojNhQSTdrB4CqnQkWEpm4O18B5Wh--rDBOhRVW76CCrDjjjsxB0-lXdoOh4wYryu_TdET_KQh0d3YpUDz1QFq6qBJf7Q7pN7ruLT7nHZzP4uoSxU8eoBlK_aSDhnCbLkxoKRT0Ifqhn0n2fDxAbrknG6yUFpoKUOJY404qa3KH5PFSGKvnvL-C03")`,
-    }}
-  />
-)}
+                    <div className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
+                      style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOKRWYlOsQahCEUJ-tHnAu2ynNYp2aFQPGmZVZnsdma4BjpGbSTElcTP-SWWVse5dD8ytyeV2RYNckRI0dyiKPojNhQSTdrB4CqnQkWEpm4O18B5Wh--rDBOhRVW76CCrDjjjsxB0-lXdoOh4wYryu_TdET_KQh0d3YpUDz1QFq6qBJf7Q7pN7ruLT7nHZzP4uoSxU8eoBlK_aSDhnCbLkxoKRT0Ifqhn0n2fDxAbrknG6yUFpoKUOJY404qa3KH5PFSGKvnvL-C03")` }} />
+                  )}
                 </div>
                 {msg.sender === "User" && (
-                  <div className="hidden group-hover:flex gap-4 mt-2 self-end">
+                  <div className="absolute top-2 right-0 hidden group-hover:flex gap-2 z-10">
+
                     <div className="relative group">
                       <FaRegCopy className="cursor-pointer hover:text-[#f3c144]" onClick={() => handleCopy(msg.text)} />
-                      <span className="absolute top-7 left-1/2 -translate-x-1/2 scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 bg-black text-white text-xs px-2 py-1 rounded">Copy</span>
+                      
                     </div>
                     <div className="relative group">
                       <FaRegEdit className="cursor-pointer hover:text-[#f3c144]" onClick={() => startEditing(idx, msg.text)} />
-                      <span className="absolute top-7 left-1/2 -translate-x-1/2 scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 bg-black text-white text-xs px-2 py-1 rounded">Edit</span>
+                      
                     </div>
                   </div>
                 )}
