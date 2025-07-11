@@ -135,19 +135,36 @@ export default function Chat() {
 
     setLoading(false);
   };
+  // index of latest user message
+const lastUserMsgIndex = [...messages].reverse().findIndex(m => m.sender === "User");
+const latestUserIndex   = lastUserMsgIndex >= 0 ? messages.length - 1 - lastUserMsgIndex : -1;
+
 
   return (
     <div className="relative flex flex-col bg-[#181611] text-white h-screen pt-[4rem] pb-[4rem]" style={{ fontFamily: 'Manrope, Noto Sans, sans-serif' }}>
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10 scrollbar-hide" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <div className="max-w-4xl mx-auto space-y-4">
           <AnimatePresence>
             {messages.map((msg, idx) => (
               <motion.div key={idx} className={`relative group flex flex-col ${msg.sender === "User" ? "items-end" : "items-start"}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <div className="flex items-end gap-3">
                   {msg.sender === "Hestia" && (
-                    <div className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
-                      style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")` }} />
-                  )}
+  <div className="relative group">
+    <div className="absolute -top-6 left-1/2 -translate-x-1/2 hidden group-hover:block z-10">
+      <FaRegCopy
+        className="cursor-pointer text-white hover:text-[#f3c144]"
+        onClick={() => handleCopy(msg.text)}
+      />
+    </div>
+    <div
+      className="bg-center bg-no-repeat bg-cover rounded-full w-8 h-8 sm:w-10 sm:h-10 shrink-0"
+      style={{
+        backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9ek015INyM7vHC4DjJCIWre7HWzj4O8b25J760nKUJ2NbkFi_3FCg4JtHKCXYHTr_WCXdBVbjMp0gtoBZt0YzB0pIJGsoxGrEGw8-4XcYYWtgCalCF0IzbHB2a93vbXQoBihop02NYqeN5HTrm7oPP53Aa-Zf_dj5I-aL-8Fj1z_RztuF6Cwh6Jz6Jb39mPIWts8DqEe60cNvgF76FvB4lmN2gElD8KiZer1uPV_9s_CNCwAOF8679H2X3gaG0KxdybRLzqdx1Qq")`,
+      }}
+    />
+  </div>
+)}
+
                   <div className="flex flex-col gap-1">
                     <p className="text-[#bab19c] text-[11px] sm:text-[13px]">
                       {msg.sender === "User" ? username : msg.sender}
@@ -171,19 +188,24 @@ export default function Chat() {
                       style={{ backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOKRWYlOsQahCEUJ-tHnAu2ynNYp2aFQPGmZVZnsdma4BjpGbSTElcTP-SWWVse5dD8ytyeV2RYNckRI0dyiKPojNhQSTdrB4CqnQkWEpm4O18B5Wh--rDBOhRVW76CCrDjjjsxB0-lXdoOh4wYryu_TdET_KQh0d3YpUDz1QFq6qBJf7Q7pN7ruLT7nHZzP4uoSxU8eoBlK_aSDhnCbLkxoKRT0Ifqhn0n2fDxAbrknG6yUFpoKUOJY404qa3KH5PFSGKvnvL-C03")` }} />
                   )}
                 </div>
-                {msg.sender === "User" && (
-                  <div className="absolute top-2 right-0 hidden group-hover:flex gap-2 z-10">
+                {/* COPY + (conditional) EDIT buttons */}
+{msg.sender === "User" && (
+  <div className="absolute top-2 right-0 hidden group-hover:flex gap-2 z-10">
+    {/* copy for every user msg */}
+    <FaRegCopy
+      className="cursor-pointer hover:text-[#f3c144]"
+      onClick={() => handleCopy(msg.text)}
+    />
+    {/* edit only for latest user msg */}
+    {idx === latestUserIndex && (
+      <FaRegEdit
+        className="cursor-pointer hover:text-[#f3c144]"
+        onClick={() => startEditing(idx, msg.text)}
+      />
+    )}
+  </div>
+)}
 
-                    <div className="relative group">
-                      <FaRegCopy className="cursor-pointer hover:text-[#f3c144]" onClick={() => handleCopy(msg.text)} />
-                      
-                    </div>
-                    <div className="relative group">
-                      <FaRegEdit className="cursor-pointer hover:text-[#f3c144]" onClick={() => startEditing(idx, msg.text)} />
-                      
-                    </div>
-                  </div>
-                )}
               </motion.div>
             ))}
           </AnimatePresence>
