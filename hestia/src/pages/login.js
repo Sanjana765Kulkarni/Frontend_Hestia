@@ -22,6 +22,12 @@ export default function Login() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      if (!localStorage.getItem("gender")) {
+  const selectedGender = window.prompt("Are you male or female?").toLowerCase();
+  if (selectedGender === "male" || selectedGender === "female") {
+    localStorage.setItem("gender", selectedGender);
+  }
+}
       navigate("/chat");
     } catch (err) {
       setError(err.message);
