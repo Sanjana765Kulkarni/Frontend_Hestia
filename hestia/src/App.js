@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Home from "./pages/home";
@@ -13,8 +14,17 @@ import PrivateRoute from "./components/privateRoute";
 
 function AppContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState(null); // track auth state
   const location = useLocation();
   const isChatPage = location.pathname === "/chat";
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="bg-black min-h-screen">
@@ -25,24 +35,21 @@ function AppContent() {
         }`}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home user={user} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signin" element={<Signup />} />
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/contact" element={<Contact />} />
-
-          {/* ✅ protect chat route */}
           <Route
             path="/chat"
             element={
-              <PrivateRoute>
+              <PrivateRoute user={user}>
                 <Chat />
               </PrivateRoute>
             }
           />
-
           <Route
             path="*"
             element={
