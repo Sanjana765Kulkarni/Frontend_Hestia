@@ -41,6 +41,7 @@ const TypingIndicator = () => (
     </div>
   </motion.div>
 );
+
 /* ======================================================================== */
 
 export default function Chat() {
@@ -53,7 +54,7 @@ export default function Chat() {
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingText, setEditingText] = useState("");
   const [username, setUsername] = useState("User");
-  const [gender, setGender] = useState("male");           // default
+  const [gender, setGender] = useState("male"); // default
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -64,7 +65,7 @@ export default function Chat() {
     if (user?.displayName) setUsername(user.displayName);
 
     const storedGender = localStorage.getItem("gender");
-    if (storedGender === "male" || storedGender === "female") {
+    if (["male", "female", "none"].includes(storedGender)) {
       setGender(storedGender);
     }
   }, []);
@@ -72,10 +73,10 @@ export default function Chat() {
   /* ----------  derive avatar URL based on gender  ---------- */
   const userAvatar =
     gender === "female"
-    ? "/female-avatar.png"
-    : gender === "male"
-    ? "/male-avatar.png"
-    : "/plant-avatar.png"; // 🌿 Plant
+      ? "/female-avatar.png"
+      : gender === "male"
+      ? "/male-avatar.png"
+      : "/plant-avatar.png"; // gender === "none"
 
   /* --------------------  auto‑scroll  -------------------- */
   useEffect(() => {
@@ -90,17 +91,21 @@ export default function Chat() {
       textarea.style.height = Math.min(textarea.scrollHeight, 240) + "px";
     }
   };
+
   const handleInputChange = (e) => {
     setInput(e.target.value);
     adjustTextareaHeight();
   };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
+
   const handleCopy = (text) => navigator.clipboard.writeText(text);
+
   const startEditing = (i, t) => {
     setEditingIndex(i);
     setEditingText(t);
@@ -143,6 +148,7 @@ export default function Chat() {
 
   const saveEdit = async (idx) => {
     if (!editingText.trim()) return;
+
     const auth = getAuth();
     const user = auth.currentUser;
     if (!user) return alert("Please log in first.");
@@ -183,7 +189,9 @@ export default function Chat() {
   };
 
   /* --------------  latest‑user‑message index  -------------- */
-  const lastUserMsgIndex = [...messages].reverse().findIndex((m) => m.sender === "User");
+  const lastUserMsgIndex = [...messages]
+    .reverse()
+    .findIndex((m) => m.sender === "User");
   const latestUserIndex =
     lastUserMsgIndex >= 0 ? messages.length - 1 - lastUserMsgIndex : -1;
 
@@ -328,7 +336,12 @@ export default function Chat() {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 10l7-7m0 0l7 7m-7-7v18"
+              />
             </svg>
           </motion.button>
         </div>
