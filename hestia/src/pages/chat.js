@@ -34,8 +34,7 @@ const TypingIndicator = () => (
 export default function Chat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [chats, setChats] = useState([]);
-  const [activeChatId, setActiveChatId] = useState(null);
-
+  const [activeChatId, setActiveChatId] = useState(() => `chat-${Date.now()}`);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     { sender: "Hestia", text: "Hello, I'm Hestia. How are you feeling today?" }
@@ -86,6 +85,7 @@ export default function Chat() {
       const response = await axios.post("https://hestia-backend-rpby.onrender.com/chat", {
         text: input,
         uid: user.uid,
+        did: activeChatId
       });
       const reply = response.data.reply || "Sorry, something went wrong.";
       setMessages((prev) => [...prev, { sender: "Hestia", text: reply }]);
@@ -94,17 +94,6 @@ export default function Chat() {
     }
     setLoading(false);
   };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  const handleCopy = (text) => navigator.clipboard.writeText(text);
-  const startEditing = (idx, text) => { setEditingIndex(idx); setEditingText(text); };
-  const cancelEditing = () => { setEditingIndex(null); setEditingText(""); };
 
   const saveEdit = async (idx) => {
     if (!editingText.trim()) return;
@@ -124,6 +113,7 @@ export default function Chat() {
       const res = await axios.post("https://hestia-backend-rpby.onrender.com/chat", {
         text: editingText,
         uid: auth.currentUser.uid,
+        did: activeChatId
       });
       const reply = res.data.reply || "Sorry, something went wrong.";
       setMessages((prev) => {
@@ -141,10 +131,8 @@ export default function Chat() {
     setLoading(false);
   };
 
-  const lastUserMsgIndex = [...messages].reverse().findIndex(m => m.sender === "User");
-  const latestUserIndex = lastUserMsgIndex >= 0 ? messages.length - 1 - lastUserMsgIndex : -1;
-
   const handleNewChat = () => {
+    setActiveChatId(`chat-${Date.now()}`);
     setMessages([{ sender: "Hestia", text: "Hello, I'm Hestia. How are you feeling today?" }]);
     setInput("");
     setEditingIndex(null);
@@ -152,6 +140,19 @@ export default function Chat() {
     setLoading(false);
     if (textareaRef.current) textareaRef.current.style.height = "48px";
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const handleCopy = (text) => navigator.clipboard.writeText(text);
+  const startEditing = (idx, text) => { setEditingIndex(idx); setEditingText(text); };
+  const cancelEditing = () => { setEditingIndex(null); setEditingText(""); };
+  const lastUserMsgIndex = [...messages].reverse().findIndex(m => m.sender === "User");
+  const latestUserIndex = lastUserMsgIndex >= 0 ? messages.length - 1 - lastUserMsgIndex : -1;
 
   const handleDeleteChat = (id) => {
     setChats((prev) => prev.filter((c) => c.id !== id));
