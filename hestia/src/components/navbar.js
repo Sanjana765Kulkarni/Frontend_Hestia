@@ -1,12 +1,12 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
-  const location = useLocation();
+
 
   const handleLogout = async () => {
     try {
