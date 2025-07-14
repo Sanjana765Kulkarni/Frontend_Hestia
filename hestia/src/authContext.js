@@ -14,6 +14,24 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, user => {
+      /* ────────────────────────────────────────────────────────────────
+         NEW: keep gender in‑sync with the currently signed‑in user
+      ────────────────────────────────────────────────────────────────── */
+      const prevUid = localStorage.getItem("uid");
+
+      if (user) {
+        // New login or account switch
+        if (prevUid !== user.uid) {
+          localStorage.removeItem("gender");      // reset old gender
+          localStorage.setItem("uid", user.uid);  // remember this user
+        }
+      } else {
+        // Completely signed out
+        localStorage.removeItem("uid");
+        localStorage.removeItem("gender");
+      }
+      /* ──────────────────────────────────────────────────────────────── */
+
       setCurrentUser(user);
       setLoading(false);
     });

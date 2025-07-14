@@ -11,6 +11,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
+    gender: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,9 @@ export default function Signup() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
+    if (!formData.gender) {
+  newErrors.gender = "Please select a gender";
+  }
     return newErrors;
   };
 
@@ -62,7 +66,7 @@ export default function Signup() {
       await updateProfile(userCredential.user, {
         displayName: fullName,
       });
-
+      localStorage.setItem("gender", formData.gender); // Save gender locally
       navigate("/chat");
     } catch (err) {
       setError(err.message);
@@ -135,6 +139,28 @@ export default function Signup() {
                   placeholder="john@example.com"
                 />
               </div>
+              <div>
+  <label htmlFor="gender" className="block text-sm font-medium mb-2">Gender</label>
+  <select
+    id="gender"
+    name="gender"
+    required
+    value={formData.gender}
+    onChange={handleChange}
+    className={`w-full px-4 py-3 bg-black border rounded-lg focus:outline-none transition-colors ${
+      errors.gender ? "border-red-500" : "border-[#483e23] focus:border-[#f4c653]"
+    }`}
+  >
+    <option value="">Select Gender</option>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+    <option value="none">I prefer not to say</option>
+  </select>
+  {errors.gender && (
+    <p className="text-red-400 text-sm mt-1">{errors.gender}</p>
+  )}
+</div>
+
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium mb-2">
