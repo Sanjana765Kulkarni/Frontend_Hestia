@@ -34,11 +34,9 @@ const TypingIndicator = () => (
 export default function Chat() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [chats, setChats] = useState([]);
-  const [activeChatId, setActiveChatId] = useState(() => `chat-${Date.now()}`);
+  const [activeChatId, setActiveChatId] = useState(null);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([
-    { sender: "Hestia", text: "Hello, I'm Hestia. How are you feeling today?" }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editingText, setEditingText] = useState("");
@@ -46,16 +44,59 @@ export default function Chat() {
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
     if (user?.displayName) setUsername(user.displayName);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchChats = async () => {
+        try {
+          const response = await axios.get(`https://hestia-backend-rpby.onrender.com/chats/${user.uid}`);
+          setChats(response.data);
+          if (response.data.length > 0) {
+            setActiveChatId(response.data[0].id);
+          } else {
+            handleNewChat();
+          }
+        } catch (error) {
+          console.error("Failed to fetch chat history:", error);
+          handleNewChat();
+        }
+      };
+      fetchChats();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user && activeChatId) {
+      const currentChat = chats.find(c => c.id === activeChatId);
+      // Only fetch messages for chats that have been saved to the backend.
+      // New chats are handled locally until the first message is sent.
+      if (currentChat && currentChat.title !== "New Chat") {
+        setLoading(true);
+        const fetchMessages = async () => {
+          try {
+            const response = await axios.get(`https://hestia-backend-rpby.onrender.com/chats/${user.uid}/${activeChatId}`);
+            setMessages(response.data.length > 0 ? response.data : [{ sender: "Hestia", text: "Hello, I'm Hestia. How are you feeling today?" }]);
+          } catch (error) {
+            console.error("Failed to fetch messages:", error);
+            setMessages([{ sender: "Hestia", text: "Could not load chat. Please try again." }]);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchMessages();
+      }
+    }
+  }, [activeChatId, user]); // Removed 'chats' from dependencies to prevent re-fetching on title change
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -71,24 +112,37 @@ export default function Chat() {
   };
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (!user) return alert("Please log in first.");
+    if (!input.trim() || !user) return;
+
+    const isNewChat = chats.some(c => c.id === activeChatId && c.title === "New Chat");
 
     setMessages((prev) => [...prev, { sender: "User", text: input }]);
+    const currentInput = input;
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "48px";
     setLoading(true);
 
     try {
       const response = await axios.post("https://hestia-backend-rpby.onrender.com/chat", {
-        text: input,
+        text: currentInput,
         uid: user.uid,
         did: activeChatId
       });
       const reply = response.data.reply || "Sorry, something went wrong.";
       setMessages((prev) => [...prev, { sender: "Hestia", text: reply }]);
+      
+      if (isNewChat) {
+        // Refetch the chat list to get the proper title from the backend
+        const fetchChats = async () => {
+            try {
+                const response = await axios.get(`https://hestia-backend-rpby.onrender.com/chats/${user.uid}`);
+                setChats(response.data);
+            } catch (error) {
+                console.error("Failed to refetch chat list:", error);
+            }
+        };
+        fetchChats();
+      }
     } catch {
       setMessages((prev) => [...prev, { sender: "Hestia", text: "Sorry, failed to get response." }]);
     }
@@ -96,12 +150,9 @@ export default function Chat() {
   };
 
   const saveEdit = async (idx) => {
-    if (!editingText.trim()) return;
+    if (!editingText.trim() || !user) return;
     const updated = [...messages];
     updated[idx].text = editingText;
-
-    const auth = getAuth();
-    if (!auth.currentUser) return alert("Please log in first.");
 
     if (messages[idx + 1]?.sender === "Hestia") updated.splice(idx + 1, 1);
     setMessages(updated);
@@ -112,7 +163,7 @@ export default function Chat() {
     try {
       const res = await axios.post("https://hestia-backend-rpby.onrender.com/chat", {
         text: editingText,
-        uid: auth.currentUser.uid,
+        uid: user.uid,
         did: activeChatId
       });
       const reply = res.data.reply || "Sorry, something went wrong.";
@@ -132,7 +183,9 @@ export default function Chat() {
   };
 
   const handleNewChat = () => {
-    setActiveChatId(`chat-${Date.now()}`);
+    const newChatId = `chat-${Date.now()}`;
+    setChats(prev => [{ id: newChatId, title: "New Chat" }, ...prev]);
+    setActiveChatId(newChatId);
     setMessages([{ sender: "Hestia", text: "Hello, I'm Hestia. How are you feeling today?" }]);
     setInput("");
     setEditingIndex(null);
